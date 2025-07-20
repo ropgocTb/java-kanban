@@ -20,6 +20,7 @@ public class Epic extends Task {
         this.subTasks.remove(subTask);
     }
 
+    @Override
     protected TaskStatus getStatus() {
         if (subTasks.isEmpty()) {
             return TaskStatus.NEW;
@@ -45,6 +46,7 @@ public class Epic extends Task {
     public String toString() {
         String str = "Epic{" +
                 "id=" + this.getId() + "; " +
+                "description=" + this.getDescription() + "; " +
                 "status=" + this.getStatus() + "; " +
                 "subTasksIds=[";
         for (SubTask subTask : subTasks) {
