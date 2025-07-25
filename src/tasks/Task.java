@@ -1,3 +1,5 @@
+package tasks;
+
 import java.util.Objects;
 
 public class Task {
@@ -12,35 +14,42 @@ public class Task {
         this.status = TaskStatus.NEW;
     }
 
-    protected int getId() {
+    public Task(Task task) {
+        this.id = task.id;
+        this.title = task.title;
+        this.description = task.description;
+        this.status = task.status;
+    }
+
+    public int getId() {
         return id;
     }
 
-    protected void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    protected TaskStatus getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    protected void setStatus(TaskStatus status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
-    protected String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    protected void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    protected String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    protected void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -58,7 +67,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "tasks.Task{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +

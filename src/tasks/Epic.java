@@ -1,27 +1,36 @@
+package tasks;
+
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    private ArrayList<SubTask> subTasks;
+    private final ArrayList<SubTask> subTasks;
 
     public Epic(String title, String description) {
         super(title, description);
         this.subTasks = new ArrayList<>();
     }
 
-    protected ArrayList<SubTask> getSubTasks() {
+    public ArrayList<SubTask> getSubTasks() {
         return subTasks;
     }
 
-    protected void addSubTask(SubTask subTask) {
-        this.subTasks.add(subTask);
+    public void addSubTask(Task subTask) {
+        if (subTask instanceof SubTask)
+            this.subTasks.add((SubTask)subTask);
+        else
+            System.out.println("Подзадачей может быть только подзадача");
     }
 
-    protected void removeSubTask(SubTask subTask) {
+    public void removeSubTask(SubTask subTask) {
         this.subTasks.remove(subTask);
     }
 
+    public void clearSubTasks() {
+        this.subTasks.clear();
+    }
+
     @Override
-    protected TaskStatus getStatus() {
+    public TaskStatus getStatus() {
         if (subTasks.isEmpty()) {
             return TaskStatus.NEW;
         }
@@ -44,14 +53,14 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        String str = "Epic{" +
+        StringBuilder str = new StringBuilder("tasks.Epic{" +
                 "id=" + this.getId() + "; " +
                 "description=" + this.getDescription() + "; " +
                 "status=" + this.getStatus() + "; " +
-                "subTasksIds=[";
+                "subTasksIds=[");
         for (SubTask subTask : subTasks) {
-            str += subTask.getId() + ";";
+            str.append(subTask.getId()).append(";");
         }
-        return str.substring(0, str.length() - 1) + "]}";
+        return str + "]}";
     }
 }
