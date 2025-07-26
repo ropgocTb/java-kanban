@@ -36,6 +36,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
+        if (task == null) {
+            System.out.println("null нельзя добавлять");
+            return;
+        }
         final int id = initId(task);
         if (id == -1) return;
         tasks.put(id, task);
@@ -45,6 +49,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubTask(SubTask subTask) {
+        if (subTask == null) {
+            System.out.println("null нельзя добавлять");
+            return;
+        }
         final Epic epic = subTask.getParent();
         final int id = initId(subTask);
         if (id == -1) return;
@@ -63,6 +71,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addEpic(Epic epic) {
+        if (epic == null) {
+            System.out.println("null нельзя добавлять");
+            return;
+        }
         final int id = initId(epic);
         if (id == -1) return;
         epics.put(id, epic);
@@ -72,6 +84,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTask(Task task) {
+        if (task == null) {
+            System.out.println("null нельзя удалять");
+            return;
+        }
         if (tasks.remove(task.getId()) != null)
             System.out.println("Задача с id " + task.getId() + " удалена.");
         else
@@ -89,6 +105,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeSubTask(SubTask subTask) {
+        if (subTask == null) {
+            System.out.println("null нельзя удалять");
+            return;
+        }
         if (subTasks.containsKey(subTask.getId())) {
             subTask.getParent().removeSubTask(subTask);
             System.out.println("Задача с id " + subTask.getId() + " удалена из списка подзадач эпика.");
@@ -114,6 +134,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeEpic(Epic epic) {
+        if (epic == null) {
+            System.out.println("null нельзя удалять");
+            return;
+        }
         if (epics.containsKey(epic.getId())) {
             for (SubTask subTask : epic.getSubTasks()) {
                 subTasks.remove(subTask.getId());
@@ -219,6 +243,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+        if (task == null) {
+            System.out.println("null нельзя обновить");
+            return;
+        }
         if (tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), task);
             System.out.println("Задача с id " + task.getId() + " обновлена.");
@@ -229,6 +257,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubTask(SubTask subTask) {
+        if (subTask == null) {
+            System.out.println("null нельзя обновить");
+            return;
+        }
         if (subTasks.containsKey(subTask.getId())) {
             subTasks.put(subTask.getId(), subTask);
             System.out.println("Подзадача с id " + subTask.getId() + " обновлена.");
@@ -239,6 +271,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
+        if (epic == null) {
+            System.out.println("null нельзя обновить");
+            return;
+        }
         if (epics.containsKey(epic.getId())) {
             epics.put(epic.getId(), epic);
             System.out.println("Эпик с id " + epic.getId() + " обновлён.");
@@ -250,6 +286,10 @@ public class InMemoryTaskManager implements TaskManager {
     //теперь менеджер возаращает только те подзадачи эпика, которые явно были добавлены
     @Override
     public List<SubTask> getSubTasksByEpic(Epic epic) {
+        if (epic == null) {
+            System.out.println("передан параметр null, возвращается null");
+            return null;
+        }
         List<SubTask> existingSubTasks = new ArrayList<>();
         if (epics.containsKey(epic.getId())) {
             Epic epic1 = epics.get(epic.getId());
