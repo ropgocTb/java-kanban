@@ -143,17 +143,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 
     @Override
-    public ArrayList<SubTask> getSubTasks() {
+    public List<SubTask> getSubTasks() {
         return new ArrayList<>(subTasks.values());
     }
 
     @Override
-    public ArrayList<Epic> getEpics() {
+    public List<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
 
@@ -248,8 +248,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     //теперь менеджер возаращает только те подзадачи эпика, которые явно были добавлены
     @Override
-    public ArrayList<SubTask> getSubTasksByEpic(Epic epic) {
-        ArrayList<SubTask> existingSubTasks = new ArrayList<>();
+    public List<SubTask> getSubTasksByEpic(Epic epic) {
+        List<SubTask> existingSubTasks = new ArrayList<>();
         if (epics.containsKey(epic.getId())) {
             Epic epic1 = epics.get(epic.getId());
             for (SubTask subTask : epic1.getSubTasks()) {

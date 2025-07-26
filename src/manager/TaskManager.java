@@ -20,11 +20,11 @@ public interface TaskManager {
 
     void removeEpic(Epic epic);
 
-    ArrayList<Task> getTasks();
+    List<Task> getTasks();
 
-    ArrayList<SubTask> getSubTasks();
+    List<SubTask> getSubTasks();
 
-    ArrayList<Epic> getEpics();
+    List<Epic> getEpics();
 
     void removeAllTasks();
 
@@ -50,7 +50,7 @@ public interface TaskManager {
 
     void removeEpic(int id);
 
-    ArrayList<SubTask> getSubTasksByEpic(Epic epic);
+    List<SubTask> getSubTasksByEpic(Epic epic);
 
     List<Task> getHistory();
 }
