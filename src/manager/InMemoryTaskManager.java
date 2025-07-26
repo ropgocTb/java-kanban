@@ -23,7 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Недопустимый id, id должен быть >= 1");
             return -1;
         } else if (id == 0) {
-            System.out.println("id не иницилизирован, будет сгенерирован новый.");
+            System.out.println("id не инициализирован, будет сгенерирован новый.");
             id = ++counter;
             return id;
         }

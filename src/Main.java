@@ -32,11 +32,10 @@ public class Main {
         //Базовая структура
         TaskManager manager = new InMemoryTaskManager();
         Epic epic = new Epic("Эпик", "описание эпика");
-        SubTask subTask = new SubTask("Подзадача эпика", "описание подзадачи", epic);
-        Task task = new Task("Задача", "описание задачи");
-
         manager.addEpic(epic);
+        SubTask subTask = new SubTask("Подзадача эпика", "описание подзадачи", epic);
         manager.addSubTask(subTask);
+        Task task = new Task("Задача", "описание задачи");
         manager.addTask(task);
 
         //заполнение истории

@@ -128,7 +128,6 @@ class InMemoryTaskManagerTest {
         manager.addEpic(epic);
 
         SubTask subTask = new SubTask("sub1test", "sub1test_desc", epic);
-
         manager.addSubTask(subTask);
         manager.addSubTask(subTask);
 
@@ -167,8 +166,8 @@ class InMemoryTaskManagerTest {
     @Test
     void removeMultipleTasksIncludedIdRemovalTest() {
         Task task = new Task("task", "task_desc");
-        Task task1 = new Task("task1", "task1_desc");
         manager.addTask(task);
+        Task task1 = new Task("task1", "task1_desc");
         manager.addTask(task1);
         manager.removeTask(task1.getId());
 
@@ -182,8 +181,8 @@ class InMemoryTaskManagerTest {
     @Test
     void removeAllTasksTest() {
         Task task = new Task("task", "task_desc");
-        Task task1 = new Task("task1", "task1_desc");
         manager.addTask(task);
+        Task task1 = new Task("task1", "task1_desc");
         manager.addTask(task1);
 
         assertNotNull(manager.getTasks());
@@ -310,6 +309,7 @@ class InMemoryTaskManagerTest {
         SubTask subTask2 = new SubTask("g", "h", epic2);
         manager.addSubTask(subTask2);
 
+
         assertEquals(2, manager.getEpics().size(), "неверное количество эпиков");
         assertEquals(2, manager.getSubTasks().size(), "неверное количество подзадач");
 
@@ -381,8 +381,8 @@ class InMemoryTaskManagerTest {
     @Test
     void generatedIdsDoNotConflictWithSettledIdsForSubTasks() {
         Epic epic = new Epic("a", "b");
-        SubTask subTask = new SubTask("c", "d", epic);
         manager.addEpic(epic);
+        SubTask subTask = new SubTask("c", "d", epic);
         manager.addSubTask(subTask);
 
         SubTask subTask1 = new SubTask("c1", "d1", epic);
@@ -449,6 +449,7 @@ class InMemoryTaskManagerTest {
         SubTask subTask1 = new SubTask("s1", "s1d", epic);
         manager.addSubTask(subTask1);
         SubTask subTask2 = new SubTask("s2", "s2d", epic);
+
 
         assertEquals(2, epic.getSubTasks().size(), "неверное количество подзадач у эпика");
         assertEquals(1, manager.getSubTasksByEpic(epic).size(), "неверное количество подзадач" +

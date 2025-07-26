@@ -15,9 +15,9 @@ public class Epic extends Task {
         return subTasks;
     }
 
-    //заменено на проверку по id
+    //заменено на проверку по id,
     public void addSubTask(SubTask subTask) {
-        if (!this.subTasks.contains(subTask) && !subTask.equals(this) && this.getId() != 0)
+        if (!this.subTasks.contains(subTask) && !subTask.equals(this))
             this.subTasks.add(subTask);
         else
             System.out.println("не удалось добавить подзадачу");
