@@ -1,24 +1,26 @@
 package tasks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private final ArrayList<SubTask> subTasks;
+    private final List<SubTask> subTasks;
 
     public Epic(String title, String description) {
         super(title, description);
         this.subTasks = new ArrayList<>();
     }
 
-    public ArrayList<SubTask> getSubTasks() {
+    public List<SubTask> getSubTasks() {
         return subTasks;
     }
 
-    public void addSubTask(Task subTask) {
-        if (subTask instanceof SubTask)
-            this.subTasks.add((SubTask)subTask);
+    //заменено на проверку по id
+    public void addSubTask(SubTask subTask) {
+        if (!this.subTasks.contains(subTask) && !subTask.equals(this) && this.getId() != 0)
+            this.subTasks.add(subTask);
         else
-            System.out.println("Подзадачей может быть только подзадача");
+            System.out.println("не удалось добавить подзадачу");
     }
 
     public void removeSubTask(SubTask subTask) {

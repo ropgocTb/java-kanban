@@ -21,7 +21,9 @@ class SubTaskTest {
     @Test
     void subTaskAsItsOwnParentTest() {
         SubTask subTask1 = new SubTask("subTask1", "subTask1_desc");
-        subTask1.setParent(subTask1);
+        Epic subTask1epic = new Epic("123", "123");
+        subTask1epic.setId(subTask1.getId());
+        subTask1.setParent(subTask1epic);
         assertNull(subTask1.getParent());
     }
 }

@@ -197,8 +197,8 @@ class InMemoryTaskManagerTest {
     @Test
     void removeSingleSubTaskTest() {
         Epic epic = new Epic("epic", "epic_desc");
-        SubTask subTask = new SubTask("a", "b", epic);
         manager.addEpic(epic);
+        SubTask subTask = new SubTask("a", "b", epic);
         manager.addSubTask(subTask);
 
         assertNotNull(manager.getSubTasks(), "подзадача не добавлена в менеджер");
@@ -216,10 +216,10 @@ class InMemoryTaskManagerTest {
     @Test
     void removeMultipleSubTasksIncludedIdRemovalTest() {
         Epic epic = new Epic("epic", "epic_desc");
-        SubTask subTask = new SubTask("a", "b", epic);
-        SubTask subTask1 = new SubTask("c", "d", epic);
         manager.addEpic(epic);
+        SubTask subTask = new SubTask("a", "b", epic);
         manager.addSubTask(subTask);
+        SubTask subTask1 = new SubTask("c", "d", epic);
         manager.addSubTask(subTask1);
 
         assertNotNull(manager.getSubTasks(), "подзадачи не добавлена в менеджер");
@@ -239,10 +239,10 @@ class InMemoryTaskManagerTest {
     @Test
     void removeAllSubTaskTest() {
         Epic epic = new Epic("epic", "epic_desc");
-        SubTask subTask = new SubTask("a", "b", epic);
-        SubTask subTask1 = new SubTask("c", "d", epic);
         manager.addEpic(epic);
+        SubTask subTask = new SubTask("a", "b", epic);
         manager.addSubTask(subTask);
+        SubTask subTask1 = new SubTask("c", "d", epic);
         manager.addSubTask(subTask1);
 
         assertNotNull(manager.getSubTasks(), "подзадачи не добавлена в менеджер");
@@ -278,16 +278,15 @@ class InMemoryTaskManagerTest {
     @Test
     void removeMultipleEpicsTest() {
         Epic epic1 = new Epic("a", "b");
+        manager.addEpic(epic1);
         Epic epic2 = new Epic("c", "d");
+        manager.addEpic(epic2);
 
         SubTask subTask1 = new SubTask("e", "f", epic1);
-        SubTask subTask2 = new SubTask("g", "h", epic2);
-        SubTask subTask3 = new SubTask("i", "j", epic2);
-
-        manager.addEpic(epic1);
-        manager.addEpic(epic2);
         manager.addSubTask(subTask1);
+        SubTask subTask2 = new SubTask("g", "h", epic2);
         manager.addSubTask(subTask2);
+        SubTask subTask3 = new SubTask("i", "j", epic2);
         manager.addSubTask(subTask3);
 
         assertEquals(2, manager.getEpics().size(), "неверное количество эпиков");
@@ -302,14 +301,13 @@ class InMemoryTaskManagerTest {
     @Test
     void removeAllEpicsTest() {
         Epic epic1 = new Epic("a", "b");
+        manager.addEpic(epic1);
         Epic epic2 = new Epic("c", "d");
+        manager.addEpic(epic2);
 
         SubTask subTask1 = new SubTask("e", "f", epic1);
-        SubTask subTask2 = new SubTask("g", "h", epic2);
-
-        manager.addEpic(epic1);
-        manager.addEpic(epic2);
         manager.addSubTask(subTask1);
+        SubTask subTask2 = new SubTask("g", "h", epic2);
         manager.addSubTask(subTask2);
 
         assertEquals(2, manager.getEpics().size(), "неверное количество эпиков");
@@ -447,11 +445,10 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldReturnSubTasksOfAnEpic() {
         Epic epic = new Epic("a", "b");
-        SubTask subTask1 = new SubTask("s1", "s1d", epic);
-        SubTask subTask2 = new SubTask("s2", "s2d", epic);
-
         manager.addEpic(epic);
+        SubTask subTask1 = new SubTask("s1", "s1d", epic);
         manager.addSubTask(subTask1);
+        SubTask subTask2 = new SubTask("s2", "s2d", epic);
 
         assertEquals(2, epic.getSubTasks().size(), "неверное количество подзадач у эпика");
         assertEquals(1, manager.getSubTasksByEpic(epic).size(), "неверное количество подзадач" +

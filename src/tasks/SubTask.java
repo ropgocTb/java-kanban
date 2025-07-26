@@ -17,13 +17,13 @@ public class SubTask extends Task {
         return parent;
     }
 
-    public void setParent(Task epic) {
-        if (epic instanceof Epic) {
-            Epic epic1 = (Epic) epic;
-            epic1.addSubTask(this);
-            this.parent = epic1;
+    //заменено на проверку по id
+    public void setParent(Epic epic) {
+        if (!epic.equals(this)) {
+            epic.addSubTask(this);
+            this.parent = epic;
         } else {
-            System.out.println("Родителем может быть только эпик");
+            System.out.println("не удалость установить родителя");
         }
     }
 

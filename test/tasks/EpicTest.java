@@ -21,22 +21,27 @@ class EpicTest {
     @Test
     void epicAsSubTaskOfItselfTest() {
         Epic epic1 = new Epic("epic1", "epic1_desc");
-        epic1.addSubTask(epic1);
+        SubTask subTask = new SubTask("123", "123");
+        subTask.setId(epic1.getId());
+        epic1.addSubTask(subTask);
         assertEquals(0, epic1.getSubTasks().size(), "эпик добавился в качестве подзадачи");
     }
 
     @Test
     void epicStatusTest() {
         Epic epic = new Epic("epic1", "epic1_desc");
+        epic.setId(1);
 
         assertEquals(TaskStatus.NEW, epic.getStatus(), "статус после создания должен быть NEW");
 
         SubTask subTask = new SubTask("sub1", "sub1_desc", epic);
+        subTask.setId(2);
         subTask.setStatus(TaskStatus.IN_PROGRESS);
 
         assertEquals(TaskStatus.IN_PROGRESS, epic.getStatus(), "статус не изменился");
 
         SubTask subTask1 = new SubTask("sub2", "sub2_desc", epic);
+        subTask.setId(3);
         subTask1.setStatus(TaskStatus.DONE);
         subTask.setStatus(TaskStatus.DONE);
 
