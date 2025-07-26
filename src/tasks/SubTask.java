@@ -19,7 +19,7 @@ public class SubTask extends Task {
 
     //заменено на проверку по id
     public void setParent(Epic epic) {
-        if (!epic.equals(this)) {
+        if (!this.equals(epic)) {
             epic.addSubTask(this);
             this.parent = epic;
         } else {
