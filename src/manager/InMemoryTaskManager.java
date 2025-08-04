@@ -88,16 +88,19 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("null нельзя удалять");
             return;
         }
-        if (tasks.remove(task.getId()) != null)
+        if (tasks.remove(task.getId()) != null) {
             System.out.println("Задача с id " + task.getId() + " удалена.");
-        else
+            history.removeTask(task.getId());
+        } else {
             System.out.println("Такой задачи нет.");
+        }
     }
 
     @Override
     public void removeTask(int id) {
         if (tasks.remove(id) != null) {
             System.out.println("Задача с id " + id + " удалена.");
+            history.removeTask(id);
         } else {
             System.out.println("Нет задачи с id: " + id);
         }
@@ -114,6 +117,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Задача с id " + subTask.getId() + " удалена из списка подзадач эпика.");
             subTasks.remove(subTask.getId());
             System.out.println("Задача с id " + subTask.getId() + " удалена из списка подзадач менеджера.");
+            history.removeTask(subTask.getId());
         } else {
             System.out.println("Нет подзадачи с id: " + subTask.getId());
         }
@@ -127,6 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Задача с id " + id + " удалена из списка подзадач эпика.");
             subTasks.remove(id);
             System.out.println("Задача с id " + id + " удалена из списка подзадач менеджера.");
+            history.removeTask(id);
         } else {
             System.out.println("Нет подзадачи с id: " + id);
         }
@@ -141,11 +146,13 @@ public class InMemoryTaskManager implements TaskManager {
         if (epics.containsKey(epic.getId())) {
             for (SubTask subTask : epic.getSubTasks()) {
                 subTasks.remove(subTask.getId());
+                history.removeTask(subTask.getId());
             }
             epic.clearSubTasks();
             System.out.println("Удалены подзадачи эпика с id " + epic.getId() + ".");
             epics.remove(epic.getId());
             System.out.println("Эпик с id " + epic.getId() + " удалён.");
+            history.removeTask(epic.getId());
         } else {
             System.out.println("Нет эпика с id: " + epic.getId());
         }
@@ -157,11 +164,13 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epics.get(id);
             for (SubTask subTask : epic.getSubTasks()) {
                 subTasks.remove(subTask.getId());
+                history.removeTask(subTask.getId());
             }
             epic.clearSubTasks();
             System.out.println("Удалены подзадачи эпика с id " + id + ".");
             epics.remove(id);
             System.out.println("Эпик с id " + id + " удалён.");
+            history.removeTask(id);
         } else {
             System.out.println("Нет эпика с id: " + id);
         }
