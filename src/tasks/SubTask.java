@@ -13,6 +13,11 @@ public class SubTask extends Task {
         parent.addSubTask(this);
     }
 
+    public SubTask(SubTask subTask) {
+        super(subTask);
+        this.parent = subTask.parent;
+    }
+
     public Epic getParent() {
         return parent;
     }
@@ -23,7 +28,7 @@ public class SubTask extends Task {
             epic.addSubTask(this);
             this.parent = epic;
         } else {
-            System.out.println("не удалость установить родителя");
+            System.out.println("не удалось установить родителя");
         }
     }
 
