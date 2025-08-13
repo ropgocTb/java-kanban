@@ -23,10 +23,7 @@ public class Main {
         for (SubTask subTask : manager.getSubTasks()) {
             System.out.println(subTask);
         }
-        System.out.println("История: ");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
-        }
+        printHistory(manager);
     }
 
     private static void printHistory(TaskManager manager) {
