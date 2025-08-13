@@ -13,7 +13,7 @@ public class Epic extends Task {
 
     public Epic(Epic epic) {
         super(epic);
-        this.subTasks = epic.getSubTasks();
+        this.subTasks = new ArrayList<>(epic.getSubTasks());
     }
 
     public List<SubTask> getSubTasks() {
@@ -22,14 +22,28 @@ public class Epic extends Task {
 
     //заменено на проверку по id,
     public void addSubTask(SubTask subTask) {
-        if (!this.subTasks.contains(subTask) && !this.equals(subTask))
-            this.subTasks.add(subTask);
-        else
+        if (!this.subTasks.contains(subTask) && !this.equals(subTask) && subTask != null){
+            SubTask subTaskCopy = new SubTask(subTask);
+            subTaskCopy.setParent(this);
+            this.subTasks.add(subTaskCopy);
+        }
+        else {
             System.out.println("не удалось добавить подзадачу");
+        }
+    }
+
+    public void updateSubTask(SubTask subTask) {
+        if (this.subTasks.contains(subTask)){
+            this.subTasks.remove(subTask);
+            this.subTasks.add(subTask);
+        } else {
+            System.out.println("подзадачи с этим id нет в эпике");
+        }
     }
 
     public void removeSubTask(SubTask subTask) {
-        this.subTasks.remove(subTask);
+        if (subTask != null)
+            this.subTasks.remove(subTask);
     }
 
     public void clearSubTasks() {
