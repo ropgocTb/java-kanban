@@ -10,7 +10,6 @@ public class SubTask extends Task {
     public SubTask(String title, String description, Epic parent) {
         super(title, description);
         this.parent = parent;
-        parent.addSubTask(this);
     }
 
     public SubTask(SubTask subTask) {
@@ -25,7 +24,6 @@ public class SubTask extends Task {
     //заменено на проверку по id
     public void setParent(Epic epic) {
         if (!this.equals(epic)) {
-            epic.addSubTask(this);
             this.parent = epic;
         } else {
             System.out.println("не удалось установить родителя");
