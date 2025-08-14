@@ -23,7 +23,7 @@ public class SubTask extends Task {
 
     //заменено на проверку по id
     public void setParent(Epic epic) {
-        if (!this.equals(epic)) {
+        if (this.getId() != epic.getId()) {
             this.parent = epic;
         } else {
             System.out.println("не удалось установить родителя");

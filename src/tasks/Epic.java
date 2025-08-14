@@ -22,7 +22,7 @@ public class Epic extends Task {
 
     //заменено на проверку по id,
     public void addSubTask(SubTask subTask) {
-        if (!this.subTasks.contains(subTask) && !this.equals(subTask) && subTask != null) {
+        if (!this.subTasks.contains(subTask) && this.getId() != subTask.getId() && subTask != null) {
             SubTask subTaskCopy = new SubTask(subTask);
             subTaskCopy.setParent(this);
             this.subTasks.add(subTaskCopy);
