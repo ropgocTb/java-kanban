@@ -20,7 +20,7 @@ class InMemoryTaskManagerTest {
     //создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер
     @Test
     void addNewTaskTest() {
-        Task task = new Task("task1test", "task1desctest");
+        Task task = new Task("task1test", "task1desc_test");
         manager.addTask(task);
 
         final int taskId = task.getId();
@@ -102,7 +102,7 @@ class InMemoryTaskManagerTest {
         assertEquals(subTask, subtasks.getFirst(), "подзадачи не совпадают");
 
         //проверить сохранилось ли в списке родителя
-        final List<SubTask> subTasks = epic.getSubTasks();
+        final List<SubTask> subTasks = manager.getEpic(epic.getId()).getSubTasks();
 
         assertNotNull(subTasks, "нет подзадачи в списке родителя");
         assertEquals(1, subTasks.size(), "неверное количество подзадач в списке родителя");
@@ -203,12 +203,14 @@ class InMemoryTaskManagerTest {
         assertNotNull(manager.getSubTasks(), "подзадача не добавлена в менеджер");
         assertNotNull(epic.getSubTasks(), "подзадача не добавлена в эпик");
         assertEquals(1, manager.getSubTasks().size(), "подзадача не добавлена в менеджер");
-        assertEquals(1, epic.getSubTasks().size(), "подзадача не добавлена в эпик");
+        assertEquals(1, manager.getEpic(epic.getId()).getSubTasks().size(), "подзадача не " +
+                "добавлена в эпик");
 
         manager.removeSubTask(subTask);
 
         assertEquals(0, manager.getSubTasks().size(), "подзадача не удалена из менеджера");
-        assertEquals(0, epic.getSubTasks().size(), "подзадача не удалена из эпика");
+        assertEquals(0, manager.getEpic(epic.getId()).getSubTasks().size(), "подзадача не " +
+                "удалена из эпика");
 
     }
 
@@ -224,14 +226,14 @@ class InMemoryTaskManagerTest {
         assertNotNull(manager.getSubTasks(), "подзадачи не добавлена в менеджер");
         assertNotNull(epic.getSubTasks(), "подзадачи не добавлена в эпик");
         assertEquals(2, manager.getSubTasks().size(), "подзадачи не добавлена в менеджер");
-        assertEquals(2, epic.getSubTasks().size(), "подзадачи не добавлена в эпик");
+        assertEquals(2, manager.getEpic(epic.getId()).getSubTasks().size(), "подзадачи не добавлена в эпик");
 
         manager.removeSubTask(subTask.getId());
 
         assertEquals(1, manager.getSubTasks().size(), "подзадача не удалена из менеджера");
-        assertEquals(1, epic.getSubTasks().size(), "подзадача не удалена из эпика");
+        assertEquals(1, manager.getEpic(epic.getId()).getSubTasks().size(), "подзадача не удалена из эпика");
         assertEquals(subTask1, manager.getSubTasks().getFirst(), "из менеджера удалилась не та задача");
-        assertEquals(subTask1, epic.getSubTasks().getFirst(), "из эпика " +
+        assertEquals(subTask1, manager.getEpic(epic.getId()).getSubTasks().getFirst(), "из эпика " +
                 "удалилась не та задача");
     }
 
@@ -245,14 +247,14 @@ class InMemoryTaskManagerTest {
         manager.addSubTask(subTask1);
 
         assertNotNull(manager.getSubTasks(), "подзадачи не добавлена в менеджер");
-        assertNotNull(epic.getSubTasks(), "подзадачи не добавлена в эпик");
+        assertNotNull(manager.getEpic(epic.getId()).getSubTasks(), "подзадачи не добавлена в эпик");
         assertEquals(2, manager.getSubTasks().size(), "подзадачи не добавлена в менеджер");
-        assertEquals(2, epic.getSubTasks().size(), "подзадачи не добавлена в эпик");
+        assertEquals(2, manager.getEpic(epic.getId()).getSubTasks().size(), "подзадачи не добавлена в эпик");
 
         manager.removeAllSubTasks();
 
         assertEquals(0, manager.getSubTasks().size(), "подзадачи не удалены из менеджера");
-        assertEquals(0, epic.getSubTasks().size(), "подзадачи не удалены из эпика");
+        assertEquals(0, manager.getEpic(epic.getId()).getSubTasks().size(), "подзадачи не удалены из эпика");
     }
 
     @Test
@@ -451,7 +453,8 @@ class InMemoryTaskManagerTest {
         SubTask subTask2 = new SubTask("s2", "s2d", epic);
 
 
-        assertEquals(2, epic.getSubTasks().size(), "неверное количество подзадач у эпика");
+        assertEquals(1, manager.getEpic(epic.getId()).getSubTasks().size(), "неверное количество " +
+                "подзадач у эпика");
         assertEquals(1, manager.getSubTasksByEpic(epic).size(), "неверное количество подзадач" +
                 "по методу менеджера");
 
@@ -459,5 +462,130 @@ class InMemoryTaskManagerTest {
 
         assertEquals(2, manager.getSubTasksByEpic(epic).size(), "неверное количество подзадач" +
                 "по методу менеджера");
+    }
+
+    @Test
+    void updatingEpicWhenSettingSubTasksManuallyShouldUpdateManager() {
+        //тест для автоудоления эпиков через epic.removeSubTask()
+        Epic epic = new Epic("epic", "epic_desc");
+        manager.addEpic(epic);
+
+        SubTask subTask1 = new SubTask("a", "b", epic);
+        manager.addSubTask(subTask1);
+        SubTask subTask2 = new SubTask("c", "d", epic);
+        manager.addSubTask(subTask2);
+        SubTask subTask3 = new SubTask("e", "f", epic);
+        manager.addSubTask(subTask3);
+
+        epic.addSubTask(subTask1);
+        epic.addSubTask(subTask2);
+        epic.addSubTask(subTask3);
+
+        //вручную удаляем что то из эпика
+        epic.removeSubTask(subTask2);
+
+        manager.updateEpic(epic);
+
+        assertEquals(2, manager.getSubTasks().size(),"при обновлении подзадача не удалилась из " +
+                "менеджера" );
+    }
+
+    @Test
+    void setterShouldNotAlterTaskAddedToManagerOnlyAlterAfterUpdateForTask() {
+        Task task = new Task("a", "b");
+        manager.addTask(task);
+
+        task.setDescription("c");
+
+        assertEquals("b", manager.getTasks().getFirst().getDescription(), "description в " +
+                "менеджере изменился до обновления");
+
+        manager.updateTask(task);
+
+        assertEquals("c", manager.getTasks().getFirst().getDescription(), "description в менеджере" +
+                " не обновился");
+    }
+
+    @Test
+    void setterShouldNotAlterTaskAddedToManagerOnlyAlterAfterUpdateForSubTask() {
+        Epic epic = new Epic("epic", "epic1_desc");
+        manager.addEpic(epic);
+
+        SubTask subTask = new SubTask("sub", "sub_desc", epic);
+        manager.addSubTask(subTask);
+
+        subTask.setTitle("sub1");
+
+        assertEquals("sub", manager.getSubTasks().getFirst().getTitle(), "названия не совпали");
+        assertEquals("sub", manager.getEpics().getFirst().getSubTasks().getFirst().getTitle(), "названия в эпике не совпали");
+
+        manager.updateSubTask(subTask);
+
+        assertEquals("sub1", manager.getSubTasks().getFirst().getTitle(), "названия не совпали");
+        assertEquals("sub1", manager.getEpics().getFirst().getSubTasks().getFirst().getTitle(), "названия в эпике не совпали");
+    }
+
+    @Test
+    void setterShouldNotAlterTaskAddedToManagerOnlyAlterAfterUpdateForEpic() {
+        Epic epic = new Epic("epic", "epic1_desc");
+        manager.addEpic(epic);
+
+        epic.setTitle("sub1");
+        SubTask subTask = new SubTask("sub", "sub1_desc");
+        epic.addSubTask(subTask);
+
+        assertEquals("epic", manager.getEpics().getFirst().getTitle(), "названия не совпали");
+        assertEquals("sub1", epic.getTitle(), "названия в эпике не совпали");
+        assertEquals(0, manager.getSubTasks().size(), "подзадача добавилась до обновления");
+
+        manager.updateEpic(epic);
+
+        assertEquals("sub1", manager.getEpics().getFirst().getTitle(), "названия не совпали");
+        assertEquals("sub1", epic.getTitle(), "названия в эпике не совпали");
+        assertEquals(1, manager.getSubTasks().size(), "подзадача не добавилась после обновления");
+
+    }
+
+    @Test
+    void updatingAndRemovingNonExistingTasksIdsOrNullTasksShouldNotChangeTaskManager() {
+        Task task = new Task("task", "task_desc");
+        Epic epic = new Epic("epic", "epic_desc");
+        SubTask subTask = new SubTask("sub", "sub_desc");
+
+        final List<Task> tasksBeforeAltering = manager.getTasks();
+        final List<Epic> epicsBeforeAltering = manager.getEpics();
+        final List<SubTask> subTasksBeforeAltering = manager.getSubTasks();
+
+        manager.updateTask(task);
+        manager.updateEpic(epic);
+        manager.updateSubTask(subTask);
+
+        assertEquals(tasksBeforeAltering, manager.getTasks(), "задача добавилась в менеджер");
+        assertEquals(epicsBeforeAltering, manager.getEpics(), "задача добавилась в менеджер");
+        assertEquals(subTasksBeforeAltering, manager.getSubTasks(), "задача добавилась в менеджер");
+
+        manager.updateTask(null);
+        manager.updateEpic(null);
+        manager.updateSubTask(null);
+
+        assertEquals(tasksBeforeAltering, manager.getTasks(), "задача добавилась в менеджер");
+        assertEquals(epicsBeforeAltering, manager.getEpics(), "задача добавилась в менеджер");
+        assertEquals(subTasksBeforeAltering, manager.getSubTasks(), "задача добавилась в менеджер");
+
+        manager.removeTask(task);
+        manager.removeEpic(epic);
+        manager.removeSubTask(subTask);
+
+        assertEquals(tasksBeforeAltering, manager.getTasks(), "задача добавилась в менеджер");
+        assertEquals(epicsBeforeAltering, manager.getEpics(), "задача добавилась в менеджер");
+        assertEquals(subTasksBeforeAltering, manager.getSubTasks(), "задача добавилась в менеджер");
+
+        manager.removeTask(null);
+        manager.removeEpic(null);
+        manager.removeSubTask(null);
+
+        assertEquals(tasksBeforeAltering, manager.getTasks(), "задача добавилась в менеджер");
+        assertEquals(epicsBeforeAltering, manager.getEpics(), "задача добавилась в менеджер");
+        assertEquals(subTasksBeforeAltering, manager.getSubTasks(), "задача добавилась в менеджер");
     }
 }

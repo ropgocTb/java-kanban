@@ -10,7 +10,11 @@ public class SubTask extends Task {
     public SubTask(String title, String description, Epic parent) {
         super(title, description);
         this.parent = parent;
-        parent.addSubTask(this);
+    }
+
+    public SubTask(SubTask subTask) {
+        super(subTask);
+        this.parent = subTask.parent;
     }
 
     public Epic getParent() {
@@ -19,11 +23,10 @@ public class SubTask extends Task {
 
     //заменено на проверку по id
     public void setParent(Epic epic) {
-        if (!this.equals(epic)) {
-            epic.addSubTask(this);
+        if (this.getId() != epic.getId()) {
             this.parent = epic;
         } else {
-            System.out.println("не удалость установить родителя");
+            System.out.println("не удалось установить родителя");
         }
     }
 

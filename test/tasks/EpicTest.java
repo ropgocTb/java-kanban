@@ -36,14 +36,21 @@ class EpicTest {
 
         SubTask subTask = new SubTask("sub1", "sub1_desc", epic);
         subTask.setId(2);
+        epic.addSubTask(subTask);
         subTask.setStatus(TaskStatus.IN_PROGRESS);
+
+        epic.updateSubTask(subTask);
 
         assertEquals(TaskStatus.IN_PROGRESS, epic.getStatus(), "статус не изменился");
 
         SubTask subTask1 = new SubTask("sub2", "sub2_desc", epic);
         subTask.setId(3);
+        epic.addSubTask(subTask1);
         subTask1.setStatus(TaskStatus.DONE);
         subTask.setStatus(TaskStatus.DONE);
+
+        epic.updateSubTask(subTask);
+        epic.updateSubTask(subTask1);
 
         assertEquals(TaskStatus.DONE, epic.getStatus(), "статус не изменился");
 
