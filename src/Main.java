@@ -14,7 +14,7 @@ public class Main {
         System.out.println("Эпики: ");
         for (Epic epic : manager.getEpics()) {
             System.out.println(epic);
-            for (SubTask subTask : epic.getSubTasks()) {
+            for (SubTask subTask : manager.getSubTasksByEpic(epic)) {
                 System.out.println("--->" + subTask);
             }
         }
