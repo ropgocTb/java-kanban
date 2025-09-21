@@ -5,7 +5,10 @@ import tasks.SubTask;
 import tasks.Task;
 import tasks.TaskStatus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private int counter = 0;

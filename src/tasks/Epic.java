@@ -35,7 +35,7 @@ public class Epic extends Task {
 
     public void removeSubTask(SubTask subTask) {
         if (subTask != null)
-            this.subTasks.remove((Integer)subTask.getId());
+            this.subTasks.remove((Integer) subTask.getId());
     }
 
     public void clearSubTasks() {
