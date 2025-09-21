@@ -15,7 +15,10 @@ class InMemoryTaskManagerTest {
     TaskManager manager;
 
     @BeforeEach
-    public void initTaskManager() { manager = Managers.getDefault(); }
+    public void initTaskManager() {
+        //заменено для тестов нового менеджера
+        manager = Managers.getFileBacked();
+    }
 
     //создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер
     @Test
@@ -102,11 +105,11 @@ class InMemoryTaskManagerTest {
         assertEquals(subTask, subtasks.getFirst(), "подзадачи не совпадают");
 
         //проверить сохранилось ли в списке родителя
-        final List<SubTask> subTasks = manager.getEpic(epic.getId()).getSubTasks();
+        final List<Integer> subTasks = manager.getEpic(epic.getId()).getSubTasks();
 
         assertNotNull(subTasks, "нет подзадачи в списке родителя");
         assertEquals(1, subTasks.size(), "неверное количество подзадач в списке родителя");
-        assertEquals(subTask, subtasks.getFirst(), "подзадачи не совпадают");
+        assertEquals(subTask.getId(), subTasks.getFirst(), "подзадачи не совпадают");
     }
 
     @Test
@@ -233,7 +236,7 @@ class InMemoryTaskManagerTest {
         assertEquals(1, manager.getSubTasks().size(), "подзадача не удалена из менеджера");
         assertEquals(1, manager.getEpic(epic.getId()).getSubTasks().size(), "подзадача не удалена из эпика");
         assertEquals(subTask1, manager.getSubTasks().getFirst(), "из менеджера удалилась не та задача");
-        assertEquals(subTask1, manager.getEpic(epic.getId()).getSubTasks().getFirst(), "из эпика " +
+        assertEquals(subTask1.getId(), manager.getEpic(epic.getId()).getSubTasks().getFirst(), "из эпика " +
                 "удалилась не та задача");
     }
 
@@ -359,7 +362,7 @@ class InMemoryTaskManagerTest {
         final SubTask savedSubTask = manager.getSubTask(2);
         assertNotNull(savedSubTask, "не удалось вернуть подзадачу по id");
         assertEquals(subTask.getTitle(), savedSubTask.getTitle(), "подзадача не совпала в менеджере");
-        assertEquals(subTask.getTitle(), savedEpic.getSubTasks().getFirst().getTitle(), "подзадача не " +
+        assertEquals(subTask.getId(), savedEpic.getSubTasks().getFirst(), "подзадача не " +
                 "совпала в эпике");
     }
 
@@ -517,12 +520,10 @@ class InMemoryTaskManagerTest {
         subTask.setTitle("sub1");
 
         assertEquals("sub", manager.getSubTasks().getFirst().getTitle(), "названия не совпали");
-        assertEquals("sub", manager.getEpics().getFirst().getSubTasks().getFirst().getTitle(), "названия в эпике не совпали");
 
         manager.updateSubTask(subTask);
 
         assertEquals("sub1", manager.getSubTasks().getFirst().getTitle(), "названия не совпали");
-        assertEquals("sub1", manager.getEpics().getFirst().getSubTasks().getFirst().getTitle(), "названия в эпике не совпали");
     }
 
     @Test
@@ -531,13 +532,14 @@ class InMemoryTaskManagerTest {
         manager.addEpic(epic);
 
         epic.setTitle("sub1");
-        SubTask subTask = new SubTask("sub", "sub1_desc");
-        epic.addSubTask(subTask);
+        SubTask subTask = new SubTask("sub", "sub1_desc", epic);
 
         assertEquals("epic", manager.getEpics().getFirst().getTitle(), "названия не совпали");
         assertEquals("sub1", epic.getTitle(), "названия в эпике не совпали");
         assertEquals(0, manager.getSubTasks().size(), "подзадача добавилась до обновления");
 
+        manager.addSubTask(subTask);
+        epic.addSubTask(subTask);
         manager.updateEpic(epic);
 
         assertEquals("sub1", manager.getEpics().getFirst().getTitle(), "названия не совпали");
