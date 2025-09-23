@@ -9,6 +9,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -67,20 +68,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
 
         try (BufferedReader br = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
-            br.readLine();
-            while (br.ready()) {
-                String line = br.readLine();
-                Task task = CSVTaskFormat.fromString(line);
-                if (task instanceof SubTask) {
-                    manager.addSubTask((SubTask) task);
-                } else if (task instanceof Epic) {
-                    manager.addEpic((Epic) task);
-                } else {
-                    manager.addTask(task);
-                }
-            }
+            br.lines().skip(1).forEach(line -> {
+                Optional<Task> optionalTask = CSVTaskFormat.fromString(line);
+                optionalTask.ifPresentOrElse(task -> {
+                    if (task instanceof SubTask) {
+                        manager.addSubTask((SubTask) task);
+                    } else if (task instanceof Epic) {
+                        manager.addEpic((Epic) task);
+                    } else {
+                        manager.addTask(task);
+                    }
+                }, () -> System.out.println("Не удалось создать задачу из строки: " + line));
+            });
         } catch (IOException ex) {
-            System.out.println("исключение");
+            System.out.println("Ошибка чтения файла: " + ex.getMessage());
         }
 
         return manager;
