@@ -8,7 +8,6 @@ import tasks.TaskStatus;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.Optional;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -80,8 +79,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     }
                 }, () -> System.out.println("Не удалось создать задачу из строки: " + line));
             });
-        } catch (IOException ex) {
-            System.out.println("Ошибка чтения файла: " + ex.getMessage());
+        } catch (IOException | ManagerSaveException ex) {
+            throw new ManagerLoadException("Ошибка работы с файлом: " + ex.getMessage());
         }
 
         return manager;
@@ -198,47 +197,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void removeEpic(int id) {
         super.removeEpic(id);
         save();
-    }
-
-    @Override
-    public Task getTask(int id) {
-        final Task task = super.getTask(id);
-        save();
-        return task;
-    }
-
-    @Override
-    public SubTask getSubTask(int id) {
-        final SubTask subTask = super.getSubTask(id);
-        save();
-        return subTask;
-    }
-
-    @Override
-    public Epic getEpic(int id) {
-        final Epic epic = super.getEpic(id);
-        save();
-        return epic;
-    }
-
-    @Override
-    public List<Task> getTasks() {
-        final List<Task> tasks = super.getTasks();
-        save();
-        return tasks;
-    }
-
-    @Override
-    public List<SubTask> getSubTasks() {
-        final List<SubTask> subTasks = super.getSubTasks();
-        save();
-        return subTasks;
-    }
-
-    @Override
-    public List<Epic> getEpics() {
-        final List<Epic> epics = super.getEpics();
-        save();
-        return epics;
     }
 }
