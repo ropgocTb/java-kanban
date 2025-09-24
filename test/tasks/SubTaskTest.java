@@ -24,6 +24,6 @@ class SubTaskTest {
         Epic subTask1epic = new Epic("123", "123");
         subTask1epic.setId(subTask1.getId());
         subTask1.setParent(subTask1epic);
-        assertNull(subTask1.getParent());
+        assertEquals(-1, subTask1.getParent(), "Задачи с одинаковым id");
     }
 }

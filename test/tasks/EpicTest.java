@@ -1,5 +1,7 @@
 package tasks;
 
+import manager.Managers;
+import manager.TaskManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,33 +31,28 @@ class EpicTest {
 
     @Test
     void epicStatusTest() {
+        TaskManager manager = Managers.getDefault();
         Epic epic = new Epic("epic1", "epic1_desc");
-        epic.setId(1);
+        manager.addEpic(epic);
 
         assertEquals(TaskStatus.NEW, epic.getStatus(), "статус после создания должен быть NEW");
 
         SubTask subTask = new SubTask("sub1", "sub1_desc", epic);
-        subTask.setId(2);
-        epic.addSubTask(subTask);
         subTask.setStatus(TaskStatus.IN_PROGRESS);
+        manager.addSubTask(subTask);
 
-        epic.updateSubTask(subTask);
-
-        assertEquals(TaskStatus.IN_PROGRESS, epic.getStatus(), "статус не изменился");
+        assertEquals(TaskStatus.IN_PROGRESS, manager.getEpicStatus(epic), "статус не изменился");
 
         SubTask subTask1 = new SubTask("sub2", "sub2_desc", epic);
-        subTask.setId(3);
-        epic.addSubTask(subTask1);
         subTask1.setStatus(TaskStatus.DONE);
         subTask.setStatus(TaskStatus.DONE);
+        manager.addSubTask(subTask1);
+        manager.updateSubTask(subTask);
 
-        epic.updateSubTask(subTask);
-        epic.updateSubTask(subTask1);
+        assertEquals(TaskStatus.DONE, manager.getEpicStatus(epic), "статус не изменился");
 
-        assertEquals(TaskStatus.DONE, epic.getStatus(), "статус не изменился");
+        manager.getEpic(epic.getId()).setStatus(TaskStatus.NEW);
 
-        epic.setStatus(TaskStatus.NEW);
-
-        assertNotEquals(TaskStatus.NEW, epic.getStatus(), "что то очень не так");
+        assertNotEquals(TaskStatus.NEW, manager.getEpicStatus(epic), "статус изменился после setStatus()");
     }
 }
