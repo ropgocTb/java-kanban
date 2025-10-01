@@ -8,6 +8,8 @@ import tasks.TaskStatus;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -15,7 +17,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
         FileBackedTaskManager manager = new FileBackedTaskManager(new File("tasks.txt"));
-        Task task1 = new Task("task1", "task1_desc");
+        Task task1 = new Task("task1", "task1_desc",
+                LocalDateTime.of(2025, 10, 1,10 ,15, 0),
+                Duration.ofMinutes(15));
         manager.addTask(task1);
         Task task2 = new Task("task2", "task2_desc");
         manager.addTask(task2);
@@ -25,16 +29,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         SubTask subTask1 = new SubTask("subTask1ForEpic1", "subTask1ForEpic1_desc", epic1);
         manager.addSubTask(subTask1);
         SubTask subTask2 = new SubTask("subTask2ForEpic1", "subTask2ForEpic1_desc", epic1);
+        subTask2.setStartTime(LocalDateTime.now());
+        subTask2.setDuration(Duration.ofMinutes(15));
         manager.addSubTask(subTask2);
         subTask2.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateSubTask(subTask2);
         SubTask subTask3 = new SubTask("subTask3ForEpic1", "subTask3ForEpic1_desc", epic1);
+        subTask3.setStartTime(subTask2.getStartTime().plusMinutes(14));
+        subTask3.setDuration(Duration.ofMinutes(30));
         manager.addSubTask(subTask3);
 
         Epic epic2 = new Epic("epic2", "epic2_desc");
         manager.addEpic(epic2);
 
-        FileBackedTaskManager manager2 = FileBackedTaskManager.loadFromFile(new File("tasks.txt"));
+        FileBackedTaskManager manager2 = FileBackedTaskManager.loadFromFile(new File("tasks.txt"), new File("tasks1.txt"));
 
         System.out.println(manager.getTasks());
         System.out.println(manager.getEpics());
@@ -44,6 +52,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println(manager2.getEpics());
         System.out.println(manager2.getSubTasks());
 
+        System.out.println(manager2.getPrioritizedTasks());
     }
 
     public FileBackedTaskManager(File file) {
@@ -53,6 +62,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public FileBackedTaskManager() {
         try {
             this.file = File.createTempFile("tempFile", null);
+            this.file.deleteOnExit();
             if (this.file.exists()) {
                 System.out.println("temp File created: " + this.file.getName());
             } else {
@@ -63,8 +73,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager manager = new FileBackedTaskManager(file);
+    static FileBackedTaskManager loadFromFile(File file, File fileToSave) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(fileToSave);
 
         try (BufferedReader br = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)) {
             br.lines().skip(1).forEach(line -> {
