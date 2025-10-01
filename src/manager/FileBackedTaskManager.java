@@ -18,7 +18,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static void main(String[] args) {
         FileBackedTaskManager manager = new FileBackedTaskManager(new File("tasks.txt"));
         Task task1 = new Task("task1", "task1_desc",
-                LocalDateTime.of(2025, 10, 1,10 ,15, 0),
+                LocalDateTime.of(2025, 10, 1, 10, 15, 0),
                 Duration.ofMinutes(15));
         manager.addTask(task1);
         Task task2 = new Task("task2", "task2_desc");
@@ -42,7 +42,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Epic epic2 = new Epic("epic2", "epic2_desc");
         manager.addEpic(epic2);
 
-        FileBackedTaskManager manager2 = FileBackedTaskManager.loadFromFile(new File("tasks.txt"), new File("tasks1.txt"));
+        FileBackedTaskManager manager2 = FileBackedTaskManager.loadFromFile(new File("tasks.txt"),
+                new File("tasks1.txt"));
 
         System.out.println(manager.getTasks());
         System.out.println(manager.getEpics());
