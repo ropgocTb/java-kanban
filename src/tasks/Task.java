@@ -1,6 +1,9 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Task {
     private int id;
@@ -8,6 +11,24 @@ public class Task {
     private String description;
     private TaskStatus status;
     protected TaskType type;
+    private Duration duration;
+    private LocalDateTime startTime;
+
+    public Task (String title, String description, LocalDateTime startTime, Duration duration) {
+        this.title = title;
+        this.description = description;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.type = TaskType.TASK;
+        this.status = TaskStatus.NEW;
+    }
+
+    public Task(String title, String description, TaskType type) {
+        this.title = title;
+        this.description = description;
+        this.status = TaskStatus.NEW;
+        this.type = type;
+    }
 
     public Task(String title, String description) {
         this.title = title;
@@ -22,6 +43,8 @@ public class Task {
         this.description = task.description;
         this.status = task.status;
         this.type = task.type;
+        this.startTime = task.startTime;
+        this.duration = task.duration;
     }
 
     public int getId() {
@@ -62,6 +85,38 @@ public class Task {
 
     public void setType(TaskType type) {
         this.type = type;
+    }
+
+    public Optional<LocalDateTime> getEndTime() {
+        if (startTime != null && duration != null)
+            return Optional.of(startTime.plusMinutes(duration.toMinutes()));
+        return Optional.empty();
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public boolean isOverlapping(Task task) {
+        if (this.getEndTime().isEmpty() || task.getEndTime().isEmpty())
+            return false;
+
+        if (this.getId() == task.getId())
+            return false;
+
+        return this.startTime.isBefore(task.getEndTime().get()) && this.getEndTime().get().isAfter(task.getStartTime());
     }
 
     @Override
