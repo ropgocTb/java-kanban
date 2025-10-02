@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class CSVTaskFormat {
-    final static DateTimeFormatter DEFAULT_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    public static final DateTimeFormatter DEFAULT_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public static String toString(Task task) {
         return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%s",
@@ -33,7 +33,7 @@ public class CSVTaskFormat {
     }
 
     public static Optional<Task> fromString(String str) {
-        if (str.isBlank() || str.isEmpty())
+        if (str.isBlank())
             return Optional.empty();
 
         String[] fields = str.split(",");
