@@ -58,4 +58,52 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertEquals(manager.getEpic(epic.getId()).getEndTime(), subTask2.getEndTime(),
                 "конец времени выполнения у эпика неверный");
     }
+
+    @Test
+    public void updateStartTimeTest() {
+        Task task = new Task("task", "task_desc", LocalDateTime.now(), Duration.ofMinutes(15));
+        manager.addTask(task);
+
+        task.setStartTime(LocalDateTime.now().plusMinutes(15));
+        manager.updateTask(task);
+
+        assertEquals(task.getStartTime(), manager.getPrioritizedTasks().getFirst().getStartTime(), "задача " +
+                "не обновилась в sortedTasks");
+    }
+
+    //при обновлении времени с корректного на null задача должна удаляться из sortedTasks
+    @Test
+    public void updateStartTimeNullTest() {
+        Task task = new Task("task", "task_desc", LocalDateTime.now(), Duration.ofMinutes(15));
+        manager.addTask(task);
+
+        task.setStartTime(null);
+        manager.updateTask(task);
+
+        assertEquals(0, manager.getPrioritizedTasks().size(), "задача " +
+                "не обновилась в sortedTasks");
+    }
+
+    @Test
+    public void updateWithOrderTest() {
+        Task task = new Task("a", "b", LocalDateTime.now(), Duration.ofMinutes(15));
+        manager.addTask(task);
+        Epic epic = new Epic("a", "b");
+        manager.addEpic(epic);
+        SubTask subTask = new SubTask("c", "d", LocalDateTime.now().plusMinutes(15),
+                Duration.ofMinutes(15), epic);
+        manager.addSubTask(subTask);
+
+        System.out.println(manager.getPrioritizedTasks());
+        assertEquals(task, manager.getPrioritizedTasks().getFirst(), "порядок приоритета неверный");
+        assertEquals(subTask, manager.getPrioritizedTasks().getLast(), "порядок приоритета неверный");
+
+        subTask.setStartTime(subTask.getStartTime().minusMinutes(31));
+        manager.updateSubTask(subTask);
+
+        assertEquals(2, manager.getPrioritizedTasks().size(), "элементов не 2");
+        System.out.println(manager.getPrioritizedTasks());
+        assertEquals(subTask.getStartTime(), manager.getPrioritizedTasks().getFirst().getStartTime(), "время" +
+                " не обновилось в sortedTasks");
+    }
 }
