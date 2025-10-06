@@ -15,8 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, SubTask> subTasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
     protected final HistoryManager history = Managers.getDefaultHistory();
-    protected final Set<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime)
-            .thenComparing(Task::getId));
+    protected final Set<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
 
     private int initId(Task task) {
@@ -340,9 +339,15 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        if (sortedTasks.contains(task)) {
-            sortedTasks.remove(task);
-            sortedTasks.add(new Task(task));
+        Task currentTask = getTask(task.getId());
+
+        if (sortedTasks.contains(currentTask)) {
+            sortedTasks.remove(currentTask);
+            if (task.getStartTime() == null || task.getDuration() == null) {
+                System.out.println("Новое время установлено некорректно, задача удалена из приоритетного списка");
+            } else {
+                sortedTasks.add(new Task(task));
+            }
         }
 
         tasks.put(task.getId(), new Task(task));
@@ -365,9 +370,15 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
 
-        if (sortedTasks.contains(subTask)) {
-            sortedTasks.remove(subTask);
-            sortedTasks.add(new Task(subTask));
+        SubTask currentSubTask = getSubTask(subTask.getId());
+
+        if (sortedTasks.contains(currentSubTask)) {
+            sortedTasks.remove(currentSubTask);
+            if (subTask.getStartTime() == null || subTask.getDuration() == null) {
+                System.out.println("обновленное время установлено некорректно, задача удалена из приоритетного списка");
+            } else {
+                sortedTasks.add(new SubTask(subTask));
+            }
         }
 
         subTasks.put(subTask.getId(), new SubTask(subTask));
