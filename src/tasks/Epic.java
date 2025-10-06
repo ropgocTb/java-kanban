@@ -1,10 +1,13 @@
 package tasks;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Epic extends Task {
     private final List<Integer> subTasks;
+    private LocalDateTime endTime;
 
     public Epic(String title, String description) {
         super(title, description);
@@ -40,6 +43,15 @@ public class Epic extends Task {
 
     public void clearSubTasks() {
         this.subTasks.clear();
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
+    public Optional<LocalDateTime> getEndTime() {
+        return Optional.ofNullable(endTime);
     }
 
     @Override

@@ -1,10 +1,24 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
     private int parent = -1;
 
     public SubTask(String title, String description) {
         super(title, description);
+        this.type = TaskType.SUBTASK;
+    }
+
+    public SubTask(String title, String description, LocalDateTime startTime, Duration duration) {
+        super(title, description, startTime, duration);
+        this.type = TaskType.SUBTASK;
+    }
+
+    public SubTask(String title, String description, LocalDateTime startTime, Duration duration, Epic parent) {
+        super(title, description, startTime, duration);
+        this.parent = parent.getId();
         this.type = TaskType.SUBTASK;
     }
 

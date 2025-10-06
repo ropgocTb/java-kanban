@@ -17,7 +17,6 @@ class InMemoryHistoryManagerTest {
         historyManager = Managers.getDefaultHistory();
     }
 
-
     @Test
     void addTaskTest() {
         Task task = new Task("task1", "task1_desc");
@@ -47,7 +46,7 @@ class InMemoryHistoryManagerTest {
         Task task = new Task("task1", "task1_desc");
         historyManager.addTask(task);
 
-        assertNotNull(historyManager.getHistory(), "задача не добавлена");
+        assertEquals(1, historyManager.getHistory().size(), "задача не добавлена");
 
         historyManager.removeTask(task.getId());
 
@@ -64,7 +63,6 @@ class InMemoryHistoryManagerTest {
         historyManager.addTask(task1);
         historyManager.addTask(task2);
 
-        assertNotNull(historyManager.getHistory(), "задачи не добавлены");
         assertEquals(2, historyManager.getHistory().size(), "неверное количество задач в истории");
         assertEquals(task1, historyManager.getHistory().getFirst(), "порядок не совпал");
         assertEquals(task2, historyManager.getHistory().get(1), "порядок не совпал");
@@ -74,8 +72,29 @@ class InMemoryHistoryManagerTest {
         assertEquals(task2, historyManager.getHistory().getFirst(), "индекс после удаления не совпал");
     }
 
+    //    для HistoryManger
+    //пустая история задач
     @Test
-    void historyLinkedListOrderTest() {
+    public void emptyHistoryTest() {
+        assertEquals(0, historyManager.getHistory().size(), "история после создания менеджера" +
+                " должна быть пустой");
+    }
+
+    //дублирование
+    @Test
+    public void duplicatesShouldNotBePresentInHistory() {
+        Task task1 = new Task("task1", "task1_desc");
+        task1.setId(1);
+
+        historyManager.addTask(task1);
+        historyManager.addTask(task1);
+
+        assertEquals(1, historyManager.getHistory().size(), "в истории появился дубликат");
+    }
+
+    //удаление из истории: начало конец серидина
+    @Test
+    void historyRemoveFirstTest() {
         Task task1 = new Task("task1", "task1_desc");
         task1.setId(1);
         Task task2 = new Task("task2", "task2_desc");
@@ -87,7 +106,54 @@ class InMemoryHistoryManagerTest {
         historyManager.addTask(task2);
         historyManager.addTask(task3);
 
-        assertNotNull(historyManager.getHistory(), "задачи не добавлены");
+        assertEquals(3, historyManager.getHistory().size(), "неверное количество задач в истории");
+        assertEquals(task1, historyManager.getHistory().getFirst(), "порядок не совпал");
+        assertEquals(task2, historyManager.getHistory().get(1), "порядок не совпал");
+        assertEquals(task3, historyManager.getHistory().get(2), "порядок не совпал");
+
+        historyManager.removeTask(task1.getId());
+
+        assertEquals(task2, historyManager.getHistory().getFirst(), "индекс после удаления не совпал");
+        assertEquals(task3, historyManager.getHistory().get(1), "индекс после удаления не совпал");
+    }
+
+    @Test
+    void historyRemoveLastTest() {
+        Task task1 = new Task("task1", "task1_desc");
+        task1.setId(1);
+        Task task2 = new Task("task2", "task2_desc");
+        task2.setId(2);
+        Task task3 = new Task("task3", "task3_desc");
+        task3.setId(3);
+
+        historyManager.addTask(task1);
+        historyManager.addTask(task2);
+        historyManager.addTask(task3);
+
+        assertEquals(3, historyManager.getHistory().size(), "неверное количество задач в истории");
+        assertEquals(task1, historyManager.getHistory().getFirst(), "порядок не совпал");
+        assertEquals(task2, historyManager.getHistory().get(1), "порядок не совпал");
+        assertEquals(task3, historyManager.getHistory().get(2), "порядок не совпал");
+
+        historyManager.removeTask(task3.getId());
+
+        assertEquals(task1, historyManager.getHistory().getFirst(), "индекс после удаления не совпал");
+        assertEquals(task2, historyManager.getHistory().get(1), "индекс после удаления не совпал");
+    }
+
+    @Test
+    void historyRemoveMiddleTest() {
+        Task task1 = new Task("task1", "task1_desc");
+        task1.setId(1);
+        Task task2 = new Task("task2", "task2_desc");
+        task2.setId(2);
+        Task task3 = new Task("task3", "task3_desc");
+        task3.setId(3);
+
+        historyManager.addTask(task1);
+        historyManager.addTask(task2);
+        historyManager.addTask(task3);
+
         assertEquals(3, historyManager.getHistory().size(), "неверное количество задач в истории");
         assertEquals(task1, historyManager.getHistory().getFirst(), "порядок не совпал");
         assertEquals(task2, historyManager.getHistory().get(1), "порядок не совпал");
