@@ -75,10 +75,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addSubTask(subTask);
 
         final int noSubTaskId = subTask.getId();
-        final SubTask notSavedSubTask = manager.getSubTask(noSubTaskId);
-
-        assertNull(notSavedSubTask, "подзадача не должна сохраняться без родителя");
-
+        assertThrows(NotFoundException.class, () -> {
+            final SubTask notSavedSubTask = manager.getSubTask(noSubTaskId);
+            assertNull(notSavedSubTask, "подзадача не должна сохраняться без родителя");
+        });
         final List<SubTask> emptyList = manager.getSubTasks();
 
         assertEquals(0, emptyList.size(), "в списке что то есть");
@@ -561,9 +561,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final List<Epic> epicsBeforeAltering = manager.getEpics();
         final List<SubTask> subTasksBeforeAltering = manager.getSubTasks();
 
-        manager.updateTask(task);
-        manager.updateEpic(epic);
-        manager.updateSubTask(subTask);
+        assertThrows(NotFoundException.class, () -> {
+            manager.updateTask(task);
+            manager.updateEpic(epic);
+            manager.updateSubTask(subTask);
+        });
+
 
         assertEquals(tasksBeforeAltering, manager.getTasks(), "задача добавилась в менеджер");
         assertEquals(epicsBeforeAltering, manager.getEpics(), "задача добавилась в менеджер");
@@ -577,9 +580,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(epicsBeforeAltering, manager.getEpics(), "задача добавилась в менеджер");
         assertEquals(subTasksBeforeAltering, manager.getSubTasks(), "задача добавилась в менеджер");
 
-        manager.removeTask(task);
-        manager.removeEpic(epic);
-        manager.removeSubTask(subTask);
+        assertThrows(NotFoundException.class, () -> {
+            manager.removeTask(task);
+            manager.removeEpic(epic);
+            manager.removeSubTask(subTask);
+        });
 
         assertEquals(tasksBeforeAltering, manager.getTasks(), "задача добавилась в менеджер");
         assertEquals(epicsBeforeAltering, manager.getEpics(), "задача добавилась в менеджер");

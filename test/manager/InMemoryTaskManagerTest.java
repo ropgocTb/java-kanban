@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Override
@@ -25,7 +26,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         manager.addTask(task1);
         Task task2 = new Task("task1", "task1_desc",
                 LocalDateTime.of(2025, 9, 30, 10, 0), Duration.ofMinutes(30));
-        manager.addTask(task2);
+        assertThrows(OverlapException.class, () -> manager.addTask(task2));
 
         assertEquals(1, manager.getTasks().size(), "Задача пересекающаяся по времени добавилась");
 
@@ -33,7 +34,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         manager.addEpic(epic);
         SubTask subTask = new SubTask("sub", "sub_desc",
                 LocalDateTime.of(2025, 9, 30, 10, 0), Duration.ofMinutes(30), epic);
-        manager.addSubTask(subTask);
+        assertThrows(OverlapException.class, () -> manager.addSubTask(subTask));
 
         assertEquals(0, manager.getSubTasks().size(), "подзадача которая пересекается по времени с" +
                 " другой задачей добавилась в менеджер");

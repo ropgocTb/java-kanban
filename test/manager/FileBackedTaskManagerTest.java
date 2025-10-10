@@ -48,7 +48,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
         assertDoesNotThrow(() -> {
             FileBackedTaskManager manager = new FileBackedTaskManager(file);
         });
-        manager.getTask(0);
+        assertThrows(NotFoundException.class, () -> manager.getTask(0));
         assertDoesNotThrow(() -> {
             FileBackedTaskManager manager1 = FileBackedTaskManager.loadFromFile(file, fileToSave);
             assertEquals(0, manager1.getTasks().size(), "в менеджере есть задачи");
