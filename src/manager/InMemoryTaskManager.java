@@ -50,8 +50,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (isOverlappingWithAny(task)) {
-            System.out.println("Задача пересекается по времени с другой задачей в менеджере, задача не была добавлена");
-            return;
+            throw new OverlapException("Задача пересекается по времени с другой задачей в " +
+                    "менеджере, задача не была добавлена");
         }
 
         final int id = initId(task);
@@ -88,9 +88,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (isOverlappingWithAny(subTask)) {
-            System.out.println("Задача пересекается по времени с другой задачей в менеджере, " +
-                    "задача не была добавлена");
-            return;
+            throw new OverlapException("Задача пересекается по времени с другой задачей в " +
+                    "менеджере, задача не была добавлена");
         }
 
         final int id = initId(subTask);
@@ -133,8 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (tasks.remove(task.getId()) == null) {
-            System.out.println("Нет задачи с id: " + task.getId());
-            return;
+            throw new NotFoundException("Не найдена такая задача");
         }
 
         history.removeTask(task.getId());
@@ -147,8 +145,7 @@ public class InMemoryTaskManager implements TaskManager {
         sortedTasks.remove(tasks.get(id));
 
         if (tasks.remove(id) == null) {
-            System.out.println("Нет задачи с id: " + id);
-            return;
+            throw new NotFoundException("Не найдена такая задача");
         }
 
         history.removeTask(id);
@@ -163,8 +160,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (!subTasks.containsKey(subTask.getId())) {
-            System.out.println("Нет подзадачи с id: " + subTask.getId());
-            return;
+            throw new NotFoundException("Не найдена такая подзадача");
         }
 
         Epic epic = epics.get(subTask.getParent());
@@ -182,8 +178,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeSubTask(int id) {
         if (!subTasks.containsKey(id)) {
-            System.out.println("Нет подзадачи с id: " + id);
-            return;
+            throw new NotFoundException("Не найдена такая подзадача");
         }
 
         SubTask subTask = subTasks.get(id);
@@ -208,8 +203,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (!epics.containsKey(epic.getId())) {
-            System.out.println("Нет эпика с id: " + epic.getId());
-            return;
+            throw new NotFoundException("Не найден такой эпик");
         }
 
         for (Integer subTaskId : getEpic(epic.getId()).getSubTasks()) {
@@ -229,8 +223,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeEpic(int id) {
         if (!epics.containsKey(id)) {
-            System.out.println("Нет эпика с id: " + id);
-            return;
+            throw new NotFoundException("Не найден такой эпик");
         }
 
         for (Integer subTaskId : getEpic(id).getSubTasks()) {
@@ -296,7 +289,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTask(int id) {
         if (tasks.get(id) == null) {
-            System.out.println("Не найдена такая задача.");
+            throw new NotFoundException("Не найдена такая задача.");
         } else {
             history.addTask(tasks.get(id));
         }
@@ -306,7 +299,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public SubTask getSubTask(int id) {
         if (subTasks.get(id) == null) {
-            System.out.println("Не найдена такая подзадача.");
+            throw new NotFoundException("Не найдена такая задача.");
         } else {
             history.addTask(subTasks.get(id));
         }
@@ -316,7 +309,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpic(int id) {
         if (epics.get(id) == null) {
-            System.out.println("Не найден такой эпик.");
+            throw new NotFoundException("Не найдена такая задача.");
         } else {
             history.addTask(epics.get(id));
         }
@@ -330,13 +323,12 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         if (!tasks.containsKey(task.getId())) {
-            System.out.println("Задачи нет в списке, поэтому она не может быть обновлена.");
-            return;
+            throw new NotFoundException("Задачи нет в списке, поэтому она не может быть обновлена.");
         }
 
         if (isOverlappingWithAny(task)) {
-            System.out.println("Задача пересекается с другой по времени и не может быть обновлена.");
-            return;
+            throw new OverlapException("Задача пересекается по времени с другой задачей в " +
+                    "менеджере, задача не была добавлена");
         }
 
         Task currentTask = getTask(task.getId());
@@ -361,13 +353,12 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         if (!subTasks.containsKey(subTask.getId())) {
-            System.out.println("Задачи нет в списке, поэтому она не может быть обновлена.");
-            return;
+            throw new NotFoundException("Задачи нет в списке, поэтому она не может быть обновлена.");
         }
 
         if (isOverlappingWithAny(subTask)) {
-            System.out.println("Задача пересекается с другой по времени и не может быть обновлена.");
-            return;
+            throw new OverlapException("Задача пересекается по времени с другой задачей в " +
+                    "менеджере, задача не была добавлена");
         }
 
         SubTask currentSubTask = getSubTask(subTask.getId());
