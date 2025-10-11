@@ -16,28 +16,28 @@ public abstract class BaseHttpHandler implements HttpHandler {
     }
 
     protected void sendNotFound(HttpExchange h) throws IOException {
-        String response = "Not found";
+        String response =  "{\"error\":\"Not Found\"}";
         byte[] resp = response.getBytes(StandardCharsets.UTF_8);
-        h.getResponseHeaders().add("Content-Type", "text/plain;charset=utf-8");
+        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         h.sendResponseHeaders(404, resp.length);
         h.getResponseBody().write(resp);
         h.close();
     }
 
     protected void sendHasOverlaps(HttpExchange h) throws IOException {
-        String response = "Not Acceptable";
+        String response =  "{\"error\":\"Not Acceptable\"}";
         byte[] resp = response.getBytes(StandardCharsets.UTF_8);
-        h.getResponseHeaders().add("Content-Type", "text/plain;charset=utf-8");
+        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         h.sendResponseHeaders(406, resp.length);
         h.getResponseBody().write(resp);
         h.close();
     }
 
     protected void sendInvalidInput(HttpExchange h) throws IOException {
-        String response = "Not Acceptable Input";
+        String response =  "{\"error\":\"Invalid Input\"}";
         byte[] resp = response.getBytes(StandardCharsets.UTF_8);
-        h.getResponseHeaders().add("Content-Type", "text/plain;charset=utf-8");
-        h.sendResponseHeaders(500, resp.length);
+        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        h.sendResponseHeaders(406, resp.length);
         h.getResponseBody().write(resp);
         h.close();
     }
