@@ -24,17 +24,8 @@ public abstract class BaseHttpHandler implements HttpHandler {
         h.close();
     }
 
-    protected void sendHasOverlaps(HttpExchange h) throws IOException {
-        String response =  "{\"error\":\"Not Acceptable\"}";
-        byte[] resp = response.getBytes(StandardCharsets.UTF_8);
-        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(406, resp.length);
-        h.getResponseBody().write(resp);
-        h.close();
-    }
-
-    protected void sendInvalidInput(HttpExchange h) throws IOException {
-        String response =  "{\"error\":\"Invalid Input\"}";
+    protected void sendNotAcceptable(HttpExchange h, String message) throws IOException {
+        String response =  "{\"error\":\"" + message + "\"}";
         byte[] resp = response.getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         h.sendResponseHeaders(406, resp.length);

@@ -89,7 +89,7 @@ public class HttpTaskServer {
             } catch (NotFoundException e) {
                 sendNotFound(exchange);
             } catch (OverlapException e) {
-                sendHasOverlaps(exchange);
+                sendNotAcceptable(exchange, "Has Overlaps");
             } catch (Exception e) {
                 exchange.sendResponseHeaders(500, -1);
                 exchange.close();
@@ -121,7 +121,7 @@ public class HttpTaskServer {
                 String type = jsonObject.get("type").getAsString();
 
                 if (!type.equals("TASK")) {
-                    sendInvalidInput(exchange);
+                    sendNotAcceptable(exchange, "Invalid Input");
                     return;
                 }
 
@@ -168,7 +168,7 @@ public class HttpTaskServer {
             } catch (NotFoundException e) {
                 sendNotFound(exchange);
             } catch (OverlapException e) {
-                sendHasOverlaps(exchange);
+                sendNotAcceptable(exchange, "Has Overlaps");
             } catch (Exception e) {
                 exchange.sendResponseHeaders(500, -1);
                 exchange.close();
@@ -199,7 +199,7 @@ public class HttpTaskServer {
                 String type = jsonObject.get("type").getAsString();
 
                 if (!type.equals("SUBTASK")) {
-                    sendInvalidInput(exchange);
+                    sendNotAcceptable(exchange, "Invalid Input");
                     return;
                 }
 
@@ -244,7 +244,7 @@ public class HttpTaskServer {
             } catch (NotFoundException e) {
                 sendNotFound(exchange);
             } catch (OverlapException e) {
-                sendHasOverlaps(exchange);
+                sendNotAcceptable(exchange, "Has Overlaps");
             } catch (Exception e) {
                 exchange.sendResponseHeaders(500, -1);
                 exchange.close();
@@ -280,7 +280,7 @@ public class HttpTaskServer {
                 JsonObject jsonObject = gson.fromJson(body, JsonObject.class);
 
                 if (!jsonObject.get("type").getAsString().equals("EPIC")) {
-                    sendInvalidInput(exchange);
+                    sendNotAcceptable(exchange, "Invalid Input");
                     return;
                 }
 
@@ -309,7 +309,7 @@ public class HttpTaskServer {
             String path = exchange.getRequestURI().getPath();
 
             if (!exchange.getRequestMethod().equals("GET") || !path.equals("/history")) {
-                sendInvalidInput(exchange);
+                sendNotAcceptable(exchange, "Invalid Input");
                 return;
             }
 
@@ -324,8 +324,10 @@ public class HttpTaskServer {
         public void handle(HttpExchange exchange) throws IOException {
             String path = exchange.getRequestURI().getPath();
 
-            if (!exchange.getRequestMethod().equals("GET") || !path.equals("/prioritized"))
-                sendInvalidInput(exchange);
+            if (!exchange.getRequestMethod().equals("GET") || !path.equals("/prioritized")) {
+                sendNotAcceptable(exchange, "Invalid Input");
+                return;
+            }
 
             String jsonPrioritized = gson.toJson(manager.getPrioritizedTasks());
 
