@@ -294,11 +294,12 @@ public class HttpTaskServer {
         public void handleDeleteEpic(HttpExchange exchange) throws IOException {
             Optional<Integer> idOpt = getTaskId(exchange);
 
-            if (idOpt.isEmpty())
+            if (idOpt.isPresent()) {
+                manager.removeEpic(idOpt.get());
+                sendText(exchange, "Эпик удалён");
+            } else {
                 throw new NotFoundException("Не найден такой эпик");
-
-            manager.removeEpic(idOpt.get());
-            sendText(exchange, "Эпик удалён");
+            }
         }
     }
 
@@ -307,8 +308,10 @@ public class HttpTaskServer {
         public void handle(HttpExchange exchange) throws IOException {
             String path = exchange.getRequestURI().getPath();
 
-            if (!exchange.getRequestMethod().equals("GET") || !path.equals("/history"))
+            if (!exchange.getRequestMethod().equals("GET") || !path.equals("/history")) {
                 sendInvalidInput(exchange);
+                return;
+            }
 
             String jsonHistory = gson.toJson(manager.getHistory());
 
